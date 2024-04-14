@@ -9,12 +9,14 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 // const server = http.createServer(app);
 
-const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/code.jayworks.tech/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/code.jayworks.tech/fullchain.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
+const httpsServer = https.createServer(credentials, app);
+
+const io = socketio(httpsServer);
 
 let rooms = {};
 let socketroom = {};
