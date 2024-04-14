@@ -115,7 +115,6 @@ io.on('connect', socket => {
         //toDo: push socket.id out of rooms
     });
 })
-const httpsServer = https.createServer(credentials, app);
 
 
 httpsServer.listen(port, function () {
