@@ -119,7 +119,7 @@ io.on('connect', socket => {
 
 
 httpsServer.listen(PORT, function () {
-    console.log(`Express server listening on port ${port} (HTTPS)`);
+    console.log(`Express server listening on port ${PORT} (HTTPS)`);
 });
 
 // server.listen(PORT, () => console.log(`Server is up and running on port ${PORT}`));
