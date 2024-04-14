@@ -14,6 +14,10 @@ navigator.mediaDevices.getUserMedia(mediaConstraints)
     .then(localstream => {
         videoCont.srcObject = localstream;
     })
+    .catch(error => {
+        console.error("Error accessing media devices:", error);
+    });
+
 
 function uuidv4() {
     return 'xxyxyxxyx'.replace(/[xy]/g, function (c) {
@@ -62,51 +66,35 @@ codeCont.addEventListener('change', (e) => {
 })
 
 cam.addEventListener('click', () => {
-    if (camAllowed) {
-        mediaConstraints = { video: false, audio: micAllowed ? true : false };
-        navigator.mediaDevices.getUserMedia(mediaConstraints)
-            .then(localstream => {
-                videoCont.srcObject = localstream;
-            })
+    camAllowed = !camAllowed; // Toggle camAllowed flag
 
-        cam.classList = "nodevice";
-        cam.innerHTML = `<i class="fas fa-video-slash"></i>`;
-        camAllowed = 0;
-    }
-    else {
-        mediaConstraints = { video: true, audio: micAllowed ? true : false };
-        navigator.mediaDevices.getUserMedia(mediaConstraints)
-            .then(localstream => {
-                videoCont.srcObject = localstream;
-            })
+    mediaConstraints.video = camAllowed;
+    
+    navigator.mediaDevices.getUserMedia(mediaConstraints)
+        .then(localstream => {
+            videoCont.srcObject = localstream;
+        })
+        .catch(error => {
+            console.error("Error toggling camera:", error);
+        });
 
-        cam.classList = "device";
-        cam.innerHTML = `<i class="fas fa-video"></i>`;
-        camAllowed = 1;
-    }
-})
+    cam.classList.toggle("nodevice");
+    cam.innerHTML = camAllowed ? `<i class="fas fa-video"></i>` : `<i class="fas fa-video-slash"></i>`;
+});
 
 mic.addEventListener('click', () => {
-    if (micAllowed) {
-        mediaConstraints = { video: camAllowed ? true : false, audio: false };
-        navigator.mediaDevices.getUserMedia(mediaConstraints)
-            .then(localstream => {
-                videoCont.srcObject = localstream;
-            })
+    micAllowed = !micAllowed; // Toggle micAllowed flag
 
-        mic.classList = "nodevice";
-        mic.innerHTML = `<i class="fas fa-microphone-slash"></i>`;
-        micAllowed = 0;
-    }
-    else {
-        mediaConstraints = { video: camAllowed ? true : false, audio: true };
-        navigator.mediaDevices.getUserMedia(mediaConstraints)
-            .then(localstream => {
-                videoCont.srcObject = localstream;
-            })
+    mediaConstraints.audio = micAllowed;
 
-        mic.innerHTML = `<i class="fas fa-microphone"></i>`;
-        mic.classList = "device";
-        micAllowed = 1;
-    }
-})
+    navigator.mediaDevices.getUserMedia(mediaConstraints)
+        .then(localstream => {
+            videoCont.srcObject = localstream;
+        })
+        .catch(error => {
+            console.error("Error toggling microphone:", error);
+        });
+
+    mic.classList.toggle("nodevice");
+    mic.innerHTML = micAllowed ? `<i class="fas fa-microphone"></i>` : `<i class="fas fa-microphone-slash"></i>`;
+});
