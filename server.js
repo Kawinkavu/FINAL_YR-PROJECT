@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express')
-const http = require('http')
+// const http = require('http')
+const https = require('https');
 const moment = require('moment');
 const socketio = require('socket.io');
 const PORT = process.env.PORT || 5000;
@@ -11,6 +12,9 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/code.jayworks.tech/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/code.jayworks.tech/fullchain.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
 
 let rooms = {};
 let socketroom = {};
@@ -109,6 +113,11 @@ io.on('connect', socket => {
         //toDo: push socket.id out of rooms
     });
 })
+const httpsServer = https.createServer(credentials, app);
 
 
-server.listen(PORT, () => console.log(`Server is up and running on port ${PORT}`));
+httpsServer.listen(port, function () {
+    console.log(`Express server listening on port ${port} (HTTPS)`);
+});
+
+// server.listen(PORT, () => console.log(`Server is up and running on port ${PORT}`));
